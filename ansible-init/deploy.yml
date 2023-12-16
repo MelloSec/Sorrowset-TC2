@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  gather_facts: no
+  become: yes
+  become_user: your_target_user
+
+  tasks:
+    - name: Check whoami
+      command: whoami
+      register: result
+
+    - name: Display the output of whoami
+      debug:
+        var: result.stdout

@@ -118,6 +118,16 @@ function Run-ScriptWithParams {
     & $ScriptPath @Params
 }
 
+# Check and create .\Deploy directory if it doesn't exist
+$deployPath = ".\Deploy"
+if(Test-Path $deployPath) { Remove-Item $deployPath -Recurse -Force}
+# Remove-Item $deployPath\* -Recurse -Force
+
+if (-not (Test-Path -Path $deployPath)) {
+    New-Item -ItemType Directory -Path $deployPath -Force
+}
+
+
 
 Run-ScriptWithParams ".\Gen-Main.ps1" $ParamsMain
 Run-ScriptWithParams ".\Gen-Providers.ps1" $ParamsProviders
@@ -126,14 +136,6 @@ Run-ScriptWithParams ".\Gen-Outputs.ps1" $ParamsOutputs
 # Run-ScriptWithParams ".\Gen-Inventory.ps1" $ParamsInventory
 
 # Change directory to .\Deploy and run terraform init
-# Check and create .\Deploy directory if it doesn't exist
-$deployPath = ".\Deploy"
-# if(Test-Path $deployPath) { Remove-Item $deployPath -Recurse -Force}
-Remove-Item $deployPath\* -Recurse -Force
-
-if (-not (Test-Path -Path $deployPath)) {
-    New-Item -ItemType Directory -Path $deployPath -Force
-}
 
 Set-Location -Path $deployPath
 Copy-Item -Path "..\templates\roles" -Destination . -Recurse -Force
@@ -200,6 +202,7 @@ else{
     
     terraform init -reconfigure
     terraform plan
+    terraform apply --auto-approve
 }
 
 
