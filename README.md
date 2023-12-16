@@ -4,6 +4,8 @@ Powershell reads in values, copies template files and replaces what's required t
 
 With and Without S3 Backend for Terraform
 
+Runs Deploy.ps1 to generate a keyvault, lock it down, store secrets, handle templating and deploy.
+
 ## Features
 
 - Spin up Operator VM on AWS
