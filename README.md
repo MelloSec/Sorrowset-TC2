@@ -14,29 +14,27 @@ With and Without S3 Backend for Terraform
 
 
 
-#### [ _What Terraform's Doing_ ]
+#### [ Overview ]
 
 
 ###### 1. Terraform reaches out to AWS APIs and provisions a VPC, subnets, project tags.
-- Change the `CIDR`, `subnets`, `region` and `tags` under `main.tf`
-- Optional Cloudflare DNS Provider commented out under `provider.tf`
-- Varialbes: `ec2_image` `ssh_public_key_location`
+- Parameters:  'EC2NAME' `SSH_PUBLIC_KEY_LOCATION`
 
 
 ###### 2. Terraform calls the AMI search module to turn our specs into the correct AMI ID
-- Outputs `ami_id` `root_device_name` `owner_id`
+- Parameters: `EC2SIZE`
 
 
 ###### 3. Terraform calls the SSH keypair module to create an AWS keypair from yout public key
-- `public_key = file("${var.ssh_public_key_location}")`
+- `public_key = file("${var.SSH_PUBLIC_KEY_LOCATION}")`
 
 
 ###### 4. Terraform configures Security Group module and opens up the firewall
-- Add  home/proxy IP addresses under `ingress_with_cidr_blocks`
+- Current public IP addres is passed to `ingress_with_cidr_blocks`
 
 
 ###### 5. Terraform calls sorrowset_EC2 Module and builds our server
-- Could change the `name` `instance_type` `key_name` `monitoring` and `volume` information
+- wooo!
 
 
 ###### 5. Terraform runs shell code, updates VM, creates ansible user, adds keys, passwordless sudo
