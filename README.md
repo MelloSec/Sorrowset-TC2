@@ -141,5 +141,3 @@ ansible-galaxy install --roles-path ~/roles -r requirements.yml
 export ANSIBLE_CONFIG=ansible.cfg
 ansible-playbook -i inventory deploy.yml
 
-
-# Sorrowset-TC2
