@@ -41,7 +41,7 @@ With and Without S3 Backend for Terraform
 - Change it if you want a different `ansible` user
 
 
-#### [ _Ansible Overview__ ]
+#### [ _Ansible Overview_ ]
 
 
 ###### 1. Ansible kicks off with `deploy.yml` 
