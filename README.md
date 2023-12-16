@@ -18,7 +18,7 @@ With and Without S3 Backend for Terraform
 
 
 ###### 1. Terraform reaches out to AWS APIs and provisions a VPC, subnets, project tags.
-- Parameters:  'EC2NAME' `SSH_PUBLIC_KEY_LOCATION`
+- Parameters:  `EC2NAME` `SSH_PUBLIC_KEY_LOCATION`
 
 
 ###### 2. Terraform calls the AMI search module to turn our specs into the correct AMI ID
