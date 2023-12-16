@@ -67,7 +67,7 @@ With and Without S3 Backend for Terraform
 - ansible-traefik =
 - ansible-vault =
 
-## Instructions
+## Manual Instructions carried over from original Sorrowset-EC2 project
 
 ###### - Make sure you have Terraform, the AWS-CLI and Ansible installed on your workstation.
 ###### - Terraform will save state on your workstation, S3/Cloud storage or a Workspace (Hashicorp, Github)
