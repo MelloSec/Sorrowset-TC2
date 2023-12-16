@@ -1,5 +1,0 @@
----
-- name: restart traefik container
-  docker_container:
-    name: "{{ traefik_container_name }}"
-    restart: true

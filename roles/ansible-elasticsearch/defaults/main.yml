@@ -1,3 +1,0 @@
----
-vm_max_map_count: '262144'
-elastic_apt_repo_ver: 7.x

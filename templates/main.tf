@@ -79,7 +79,7 @@ resource "aws_security_group_rule" "ssh_access" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = [chomp(data.http.current_ip.body)]
+  cidr_blocks       = ["${chomp(data.http.current_ip.body)}/32"]
   security_group_id = module.<<<EC2NAME>>>_sg.security_group_id
   description       = "SSH"
 }
@@ -89,7 +89,7 @@ resource "aws_security_group_rule" "dns_access" {
   from_port         = 53
   to_port           = 53
   protocol          = "udp"
-  cidr_blocks       = [chomp(data.http.current_ip.body)]
+  cidr_blocks       = ["${chomp(data.http.current_ip.body)}/32"]
   security_group_id = module.<<<EC2NAME>>>_sg.security_group_id
   description       = "DNS"
 }
@@ -99,7 +99,7 @@ resource "aws_security_group_rule" "http_access" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = [chomp(data.http.current_ip.body)]
+  cidr_blocks       = ["${chomp(data.http.current_ip.body)}/32"]
   security_group_id = module.<<<EC2NAME>>>_sg.security_group_id
   description       = "HTTP"
 }
@@ -109,12 +109,13 @@ resource "aws_security_group_rule" "https_access" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = [chomp(data.http.current_ip.body)]
+  cidr_blocks       = ["${chomp(data.http.current_ip.body)}/32"]
   security_group_id = module.<<<EC2NAME>>>_sg.security_group_id
   description       = "HTTPS"
 }
 
-module "<<<EC2NAME>>>_ec2" {
+
+module "<<<EC2NAME>>>" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   count = 1
   name = "<<<EC2NAME>>>-vm-1"

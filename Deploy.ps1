@@ -129,6 +129,7 @@ Copy-Item -Path "..\templates\modules" -Destination . -Recurse -Force
 # Copy-Item -Path ".\templates\ami-search" -Destination $deployPath -Recurse -Force
 
 terraform init
+terraform plan
 
 ### S3 Version
 # $AWS_ACCESS_KEY_ID = Read-Host "Enter DigitalOcean S3 Key ID" -AsSecureString
