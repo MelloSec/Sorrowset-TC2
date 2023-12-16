@@ -1,0 +1,54 @@
+galaxy_info:
+  role_name: gophish
+  namespace: justin_p
+  author: Justin Perdok
+  description: Gophish is an open-source phishing toolkit designed for businesses and penetration testers.
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: opensuse
+      versions:
+        - 15.2
+    - name: alpine
+      versions:
+        - any
+    - name: ArchLinux
+      versions:
+        - any
+    - name: debian
+      versions:
+        - buster
+    - name: Ubuntu
+      versions:
+        - bionic
+        - artful
+        - xenial
+    - name: Amazon Linux 2
+      versions:
+        - any
+    - name: Fedora
+      versions:
+        - 30
+        - 31
+        - 32
+    - name: EL
+      versions:
+        - 8
+
+  galaxy_tags: ["gophish", "phising"]
+
+dependencies:
+  - role: robertdebock.update_package_cache
+    version: 1.1.14
+    tags: molecule-idempotence-notest
+  - role: robertdebock.core_dependencies
+    version: 1.5.0
+  - role: geerlingguy.pip
+    version: 2.0.0
+    vars:
+      pip_package: python3-pip
+      pip_install_packages:
+        - name: cryptography

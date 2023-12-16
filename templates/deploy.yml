@@ -1,0 +1,34 @@
+---
+- name: Install Roles
+  gather_facts: yes
+  hosts: all
+  connection: ssh
+  become: True
+  vars:
+    ansible_distribution: 'Ubuntu'
+    ansible_os_family: 'Debian'
+
+# - name: run ansible galaxy
+#   local_action: command ansible-galaxy install -r requirements.yml --ignore-errors
+#   become: yes # But do I need to?
+
+# the requirements.yml has been failing to install some things to the local roles folder so
+# ansible-galaxy install -p ./roles geerlingguy.security geerlingguy.ntp weareinteractive.users 
+
+
+  roles:
+  # Core
+   - { role: geerlingguy.pip }   
+   - { role: os }
+   - { role: geerlingguy.security }
+
+  # Optional:
+    # - { role: geerlingguy.ntp }   
+    # - { role: ansible-elasticsearch }
+    # - { role: ansible-traefik }
+    # - { role: ansible-vault }
+
+  # Legacy
+    # - { role: viasite-ansible.zsh }
+    # - { role: weareinteractive.users }
+

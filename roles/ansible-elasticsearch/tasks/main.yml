@@ -1,0 +1,56 @@
+---
+- name: Set vm.max_map_count
+  sysctl:
+    name: vm.max_map_count
+    value: "{{ vm_max_map_count }}"
+    state: present
+
+- name: Install required packages
+  apt:
+    name: apt-transport-https
+
+- name: Import elasticsearch gpg key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: Add elasticsearch apt repo
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/{{ elastic_apt_repo_ver }}/apt stable main"
+    state: present
+    update_cache: yes
+
+- name: Install elasticsearch
+  apt:
+    name: elasticsearch
+
+- name: Install kibana
+  apt:
+    name: kibana
+
+- name: Bind elastichsearch to all interfaces
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    insertafter: "{{ item.insertafter }}"
+    line: "{{ item.line }}"
+  with_items:
+    - insertafter: ^#network.host
+      line: "network.host: 0.0.0.0"
+    - insertafter: EOF
+      line: "discovery.type: single-node"
+  notify: Restart elasticsearch
+
+- name: Bind kibana to all interfaces
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    insertafter: ^#server.host
+    line: "server.host: 0.0.0.0"
+  notify: Restart kibana
+
+- name: Enable service elasticsearch
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - elasticsearch
+    - kibana

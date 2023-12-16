@@ -1,0 +1,38 @@
+    # Set up Flask and venv
+    cd /ansible/FLNC/Exec
+    python3 -m venv venv
+    source venv/bin/activate
+    # cp -r ~/certs ~/FLNC/Server
+    # cp -r ~/certs certs
+    pip install -r requirements.txt
+    cd /ansible
+  
+    # Set up Flask and venv
+    cd /ansible/FLNC/Exfil
+    python3 -m venv venv
+    source venv/bin/activate
+    # cp -r ~/certs ~/FLNC/Server
+    # cp -r ~/certs certs
+    pip install -r requirements.txt
+    cd /ansible
+  
+  
+    # set up node
+    # Check if ~/your-corsanywhere exists
+    if [ ! -d ~/yourcorsanywhere ]; then
+        # Clone the GitHub repository
+        git clone https://github.com/mellosec/yourcorsanywhere /home/ansible/yourcorsanywhere
+    fi
+    
+    cd /ansible/yourcorsanywhere/lure-server/cors-anywhere
+    npm install
+    
+    cd /ansible
+    # Create detached TMUX sessions
+    tmux new-session -d -s exfil
+    tmux send-keys -t exfil "cd home/ansible/FLNC/Exfil" C-m
+    tmux send-keys -t exfil "python3 analytics.py -n" C-m
+    tmux new-session -d -s exec
+    tmux send-keys -t exec "cd home/ansible/FLNC/Exec" C-m
+    tmux send-keys -t exec "python3 supdho.py -n" C-m
+    tmux list-sessions

@@ -1,0 +1,35 @@
+# Terraform .terraform directory
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfplan files
+*.tfplan
+
+# Crash log files
+crash.log
+
+# Exclude .terraform.lock.hcl if using Terraform 0.14+
+# Uncomment the following line if applicable
+# .terraform.lock.hcl
+
+# Exclude provider credentials file
+terraform.tfvars
+
+# Ignore .tfvars files that are meant to be shared amongst team members
+*.auto.tfvars
+
+# Ignore override files as they are usually used to override resources locally and do not need to be committed
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore sensitive JSON files
+*.json
