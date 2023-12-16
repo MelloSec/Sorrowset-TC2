@@ -7,14 +7,14 @@ param(
 )
 
 # Check and create .\Deploy\inventory directory if it doesn't exist
-$deployInventoryPath = ".\Deploy\inventory"
-if (-not (Test-Path -Path $deployInventoryPath)) {
-    New-Item -ItemType Directory -Path $deployInventoryPath -Force
+$deployPath = ".\Deploy"
+if (-not (Test-Path -Path $deployPath)) {
+    New-Item -ItemType Directory -Path $deployPath
 }
 
 # Copy inventory.yml template to .\Deploy\inventory
 $templatePath = ".\templates\inventory\inventory.yml"
-$deployFilePath = Join-Path $deployInventoryPath "inventory.yml"
+$deployFilePath = Join-Path $deployPath "inventory.yml"
 Copy-Item -Path $templatePath -Destination $deployFilePath -Force
 
 # Copy requirements.yml template to .\Deploy
@@ -36,12 +36,12 @@ Copy-Item -Path $templateDeployPath -Destination $deployFilePath -Force
 # Function to replace placeholder in file
 function Replace-PlaceholderInFile {
     param($filePath, $placeholder, $value)
+    Write-Output "replacing $placeholder with $value"
     (Get-Content $filePath) -replace "<<<$placeholder>>>", $value | Set-Content $filePath
 }
-
 # Replace placeholders with parameter values
-if ($EC2NAME) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2NAME" -value $EC2NAME }
-if ($USERNAME) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "USERNAME" -value $USERNAME }
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2NAME" -value $EC2NAME
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "USERNAME" -value $USERNAME
 
 # Usage Example
 # $params = @{

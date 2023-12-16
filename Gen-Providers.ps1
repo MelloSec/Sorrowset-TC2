@@ -23,13 +23,14 @@ Copy-Item -Path $templatePath -Destination $deployFilePath -Force
 # Function to replace placeholder in file
 function Replace-PlaceholderInFile {
     param($filePath, $placeholder, $value)
+    Write-Output "replacing $placeholder with $value"
     (Get-Content $filePath) -replace "<<<$placeholder>>>", $value | Set-Content $filePath
 }
 
 # Replace placeholders with parameter values
-if ($BUCKETREGION) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "BUCKETREGION" -value $BUCKETREGION }
-if ($VAULTNAME) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "VAULTNAME" -value $VAULTNAME }
-if ($VAULTGROUP) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "VAULTGROUP" -value $VAULTGROUP }
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "BUCKETREGION" -value $BUCKETREGION
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "VAULTNAME" -value $VAULTNAME
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "VAULTGROUP" -value $VAULTGROUP
 
 # Pipeline Usage Example
 # $params = @{

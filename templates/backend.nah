@@ -3,7 +3,7 @@ terraform {
     bucket         = "<<<BUCKET>>>"
     key            = "<<<BUCKETKEY>>>\terraform.tfstate"
     region         = "<<<BUCKETREGION>>>"
-    endpoint       = "<<<BUCKETENDPOINT>>>.digitaloceanspaces.com"  # Replace with the appropriate endpoint for your region
+    endpoint       = "<<<BUCKETENDPOINT>>>.digitaloceanspaces.com"  
     # access_key = ""
     # secret_key = ""
     skip_credentials_validation = true

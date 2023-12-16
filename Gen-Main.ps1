@@ -29,15 +29,24 @@ Copy-Item -Path $templatePath -Destination $deployFilePath -Force
 # Function to replace placeholder in file
 function Replace-PlaceholderInFile {
     param($filePath, $placeholder, $value)
+    Write-Output "replacing $placeholder with $value"
     (Get-Content $filePath) -replace "<<<$placeholder>>>", $value | Set-Content $filePath
 }
 
 # Replace placeholders with parameter values
-if ($DOMAINNAME) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINNAME" -value $DOMAINNAME }
-if ($DOMAINSUFFIX) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINSUFFIX" -value $DOMAINSUFFIX }
-if ($EC2NAME) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2NAME" -value $EC2NAME }
-if ($EC2SIZE) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2SIZE" -value $EC2SIZE }
-if ($SSH_PUBLIC_KEY_LOCATION) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "SSH_PUBLIC_KEY_LOCATION" -value $SSH_PUBLIC_KEY_LOCATION }
+# if ($DOMAINNAME) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINNAME" -value $DOMAINNAME }
+# if ($DOMAINSUFFIX) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINSUFFIX" -value $DOMAINSUFFIX }
+# if ($EC2NAME) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2NAME" -value $EC2NAME }
+# if ($EC2SIZE) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2SIZE" -value $EC2SIZE }
+# if ($SSH_PUBLIC_KEY_LOCATION) { Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "SSH_PUBLIC_KEY_LOCATION" -value $SSH_PUBLIC_KEY_LOCATION }
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINNAME" -value $DOMAINNAME 
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINSUFFIX" -value $DOMAINSUFFIX 
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2NAME" -value $EC2NAME 
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2SIZE" -value $EC2SIZE 
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "SSH_PUBLIC_KEY_LOCATION" -value $SSH_PUBLIC_KEY_LOCATION
+
+# $main = Get-Content ".\Deploy\main.tf"
+# Write-Output $main
 
 # Pipeline Usage Example
 # $params = @{

@@ -1,0 +1,33 @@
+- name: Create Swap
+  shell: sudo dd if=/dev/zero bs=1M count=1024 of=/mnt/1GiB.swap
+  become: true 
+
+- name: Swap Permissions
+  shell: sudo chmod 600 /mnt/1GiB.swap
+  become: true
+
+- name: Get yo swap on
+  shell: sudo mkswap /mnt/1GiB.swap && sudo swapon /mnt/1GiB.swap
+  become: true 
+
+# # Added tasks to handle potential swap conflicts:
+# - name: Check if swap is already mounted
+#   shell: swapon --show | grep /mnt/1GiB.swap
+#   register: swap_check
+#   failed_when: false
+#   changed_when: false
+
+# - name: Turn off swap
+#   command: swapoff /mnt/1GiB.swap
+#   when: swap_check.rc == 0
+
+# - name: Remove existing swap file
+#   file:
+#     path: /mnt/1GiB.swap
+#     state: absent
+#   when: swap_check.rc == 0
+
+# # Your original task that was failing:
+# - name: Create Swap
+#   command: dd if=/dev/zero bs=1M count=1024 of=/mnt/1GiB.swap
+

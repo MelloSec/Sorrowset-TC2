@@ -6,6 +6,29 @@ With and Without S3 Backend for Terraform
 
 Run Deploy.ps1 to generate a keyvault, lock it down, store secrets, handle templating and deploy the server
 
+```powershell
+# Define your parameters in a hashtable with placeholder values
+$params = @{
+    BUCKET = "your-bucket-name"
+    BUCKETKEY = "your-bucket-key"
+    BUCKETREGION = "your-bucket-region"
+    BUCKETENDPOINT = "your-bucket-endpoint"
+    EC2NAME = "your-ec2-instance-name"
+    EC2SIZE = "your-ec2-instance-size"
+    USERNAME = "your-username"
+    AZREGION = "your-azure-region"
+    VAULTNAME = "your-vault-name"
+    VAULTGROUP = "your-vault-group"
+    genKeyVault = $true  # Set to $false if you are specifying an existing keyvault
+    DOMAINNAME = "your-domain-name"
+    DOMAINSUFFIX = "your-domain-suffix"
+    SSH_PUBLIC_KEY_LOCATION = "path-to-your-ssh-public-key"
+}
+
+# Run the Deploy script with the parameters from the hashtable
+.\Deploy.ps1 @params
+```
+
 ## Features
 
 - Spin up Operator VM on AWS
