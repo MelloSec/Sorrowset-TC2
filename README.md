@@ -14,7 +14,7 @@ With and Without S3 Backend for Terraform
 
 
 
-#### [ Overview ]
+#### [ _Terraform Overview_ ]
 
 
 ###### 1. Terraform reaches out to AWS APIs and provisions a VPC, subnets, project tags.
@@ -41,7 +41,7 @@ With and Without S3 Backend for Terraform
 - Change it if you want a different `ansible` user
 
 
-#### [ _What Ansible's Doing_ ]
+#### [ _Ansible Overview__ ]
 
 
 ###### 1. Ansible kicks off with `deploy.yml` 
