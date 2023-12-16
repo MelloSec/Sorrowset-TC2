@@ -45,7 +45,9 @@ param(
     [Parameter(ValueFromPipelineByPropertyName = $true)]
     [string]$USERNAME,
 
-    [switch]$genKeyVault
+    [switch]$genKeyVault,
+
+    [bool]$s3enabled = $false
 )
 
 # Define a helper function to run each script
@@ -95,6 +97,21 @@ $ParamsOutputs = @{
    EC2NAME = $EC2NAME
 }
 
+function Replace-PlaceholderInFile {
+    param($filePath, $placeholder, $value)
+    Write-Output "Replacing $placeholder with $value"
+    (Get-Content $filePath) -replace "\(\(\($placeholder\)\)\)", $value | Set-Content $filePath
+}
+
+# Run the scripts with the correct parameter sets
+if ($genKeyVault) {
+    Run-ScriptWithParams ".\Gen-KeyVault.ps1" $ParamsKeyVault
+}
+
+if($s3enabled) {
+    Run-ScriptWithParams ".\Gen-Backend.ps1" $ParamsBackend
+}
+
 function Run-ScriptWithParams {
     param($ScriptPath, $Params)
     Write-Output "Running $ScriptPath." 
@@ -102,14 +119,6 @@ function Run-ScriptWithParams {
 }
 
 
-
-
-# Run the scripts with the correct parameter sets
-if ($genKeyVault) {
-    Run-ScriptWithParams ".\Gen-KeyVault.ps1" $ParamsKeyVault
-}
-
-Run-ScriptWithParams ".\Gen-Backend.ps1" $ParamsBackend
 Run-ScriptWithParams ".\Gen-Main.ps1" $ParamsMain
 Run-ScriptWithParams ".\Gen-Providers.ps1" $ParamsProviders
 Run-ScriptWithParams ".\Gen-Variables.ps1" $ParamsVariables
@@ -119,6 +128,9 @@ Run-ScriptWithParams ".\Gen-Outputs.ps1" $ParamsOutputs
 # Change directory to .\Deploy and run terraform init
 # Check and create .\Deploy directory if it doesn't exist
 $deployPath = ".\Deploy"
+# if(Test-Path $deployPath) { Remove-Item $deployPath -Recurse -Force}
+Remove-Item $deployPath\* -Recurse -Force
+
 if (-not (Test-Path -Path $deployPath)) {
     New-Item -ItemType Directory -Path $deployPath -Force
 }
@@ -128,8 +140,68 @@ Copy-Item -Path "..\templates\roles" -Destination . -Recurse -Force
 Copy-Item -Path "..\templates\modules" -Destination . -Recurse -Force
 # Copy-Item -Path ".\templates\ami-search" -Destination $deployPath -Recurse -Force
 
-terraform init
-terraform plan
+
+
+if($s3enabled)
+{
+    
+    Write-Output "Placeholder for backend version"
+    Prompt for DigitalOcean Spaces credentials
+    $doAccessKey = Read-Host "Enter your DigitalOcean Spaces Access Key" -AsSecureString
+    $doSecretKey = Read-Host "Enter your DigitalOcean Spaces Secret Key" -AsSecureString
+
+    # Convert Secure Strings to Plain Text
+    $ptr1 = [System.Runtime.InteropServices.Marshal]::SecureStringToGlobalAllocUnicode($doAccessKey)
+    $doAccessKeyPlainText = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($ptr1)
+    [System.Runtime.InteropServices.Marshal]::ZeroFreeGlobalAllocUnicode($ptr1)
+
+    $ptr2 = [System.Runtime.InteropServices.Marshal]::SecureStringToGlobalAllocUnicode($doSecretKey)
+    $doSecretKeyPlainText = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($ptr2)
+    [System.Runtime.InteropServices.Marshal]::ZeroFreeGlobalAllocUnicode($ptr2)
+
+    # Replace placeholders in deploy\backend.tf
+    $backendFilePath = ".\backend.tf"
+    Replace-PlaceholderInFile $backendFilePath "DOSPACEACCESS" $doAccessKeyPlainText
+    Replace-PlaceholderInFile $backendFilePath "DOSPACEKEY" $doSecretKeyPlainText
+
+
+
+    # # Set up AWS CLI profile for DigitalOcean Spaces
+    # aws configure set aws_access_key_id $doAccessKeyPlainText --profile digitalocean
+    # aws configure set aws_secret_access_key $doSecretKeyPlainText --profile digitalocean
+    # aws configure set region $BUCKETREGION --profile digitalocean 
+
+
+    # $doAccessKey = Read-Host "Enter your DigitalOcean Spaces Access Key" 
+    # $doSecretKey = Read-Host "Enter your DigitalOcean Spaces Secret Key" 
+    
+    # # Set up AWS CLI profile for DigitalOcean Spaces
+    # aws configure set aws_access_key_id $doAccessKey --profile digitalocean
+    # aws configure set aws_secret_access_key $doSecretKey --profile digitalocean
+    # aws configure set region $BUCKETREGION --profile digitalocean 
+
+    # # Use the Profile with Terraform
+    # $Env:AWS_PROFILE = "digitalocean"
+    # terraform init -migrate-state
+    terraform init -reconfigure
+
+    $Env:AWS_PROFILE = "default"  # or your regular AWS profile name
+    terraform plan
+
+
+    # Clearing Environment Variable
+    # Remove-Variable -Name AWS_PROFILE -Scope Local
+
+    # Reset to default AWS profile if necessary
+    # $Env:AWS_PROFILE = "default"
+
+}
+else{
+    
+    terraform init -reconfigure
+    terraform plan
+}
+
 
 ### S3 Version
 # $AWS_ACCESS_KEY_ID = Read-Host "Enter DigitalOcean S3 Key ID" -AsSecureString

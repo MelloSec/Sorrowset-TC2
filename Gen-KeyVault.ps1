@@ -24,7 +24,7 @@ foreach ($name in $secretNames) {
 # Create resource group and keyvault, network rule for your IP only
 az group create --name $group --location eastus
 az keyvault create --name $vault --resource-group $group --location eastus
-az keyvault network-rule add --name $vault --resource-group $group --ip-address $ipAddress
+$access = az keyvault network-rule add --name $vault --resource-group $group --ip-address $ipAddress
 
 # Add each secret to the key vault
 foreach ($secretName in $secretNames) {
@@ -32,7 +32,7 @@ foreach ($secretName in $secretNames) {
     $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureString)
     $secretValue = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
     Write-Output "Adding $secretName to key vault"
-    az keyvault secret set --vault-name $vault --name $secretName --value $secretValue
+    $scrt =  az keyvault secret set --vault-name $vault --name $secretName --value $secretValue
 
     # Clear converted plain text secret from memory
     Remove-Variable -Name secretValue
