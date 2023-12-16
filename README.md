@@ -4,7 +4,7 @@ Powershell reads in values, copies template files and replaces what's required t
 
 With and Without S3 Backend for Terraform
 
-Runs Deploy.ps1 to generate a keyvault, lock it down, store secrets, handle templating and deploy.
+Run Deploy.ps1 to generate a keyvault, lock it down, store secrets, handle templating and deploy the server
 
 ## Features
 
@@ -69,7 +69,7 @@ Runs Deploy.ps1 to generate a keyvault, lock it down, store secrets, handle temp
 - ansible-traefik =
 - ansible-vault =
 
-#### Manual Instructions carried over from original Sorrowset-EC2 project
+### Manual Instructions carried over from original Sorrowset-EC2 project
 
 ###### - Make sure you have Terraform, the AWS-CLI and Ansible installed on your workstation.
 ###### - Terraform will save state on your workstation, S3/Cloud storage or a Workspace (Hashicorp, Github)
