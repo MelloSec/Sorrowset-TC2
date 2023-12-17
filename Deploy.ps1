@@ -215,6 +215,7 @@ else{
     terraform apply
 
     if($wsl){
+        Write-Output "RUnning ansible with WSL. Uses sudo, will ask for a password multiple times."
         wsl sudo cp /mnt/c/Users/$WINDOWSUSER/.ssh/id_rsa /root/.ssh/id_rsa
         wsl sudo chmod 600 /root/.ssh/id_rsa
         wsl sudo ansible-galaxy install --roles-path ~/roles -r requirements.yml
