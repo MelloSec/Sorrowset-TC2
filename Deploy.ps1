@@ -146,6 +146,7 @@ Run-ScriptWithParams ".\Gen-Inventory.ps1" $ParamsInventory
 Set-Location -Path $deployPath
 Copy-Item -Path "..\templates\roles" -Destination . -Recurse -Force
 Copy-Item -Path "..\templates\modules" -Destination . -Recurse -Force
+Copy-Item -Path "..\templates\postconfig.yml" -Destination . -Recurse -Force
 # Copy-Item -Path ".\templates\ami-search" -Destination $deployPath -Recurse -Force
 
 
@@ -221,6 +222,7 @@ else{
         wsl sudo ansible-galaxy install --roles-path ~/roles -r requirements.yml
         wsl export ANSIBLE_CONFIG=ansible.cfg
         wsl sudo ansible-playbook -i ./inventory.yml deploy.yml
+        wsl sudo ansible-playbook -i ./inventory.yml postconfig.yml
     }
 }
 
