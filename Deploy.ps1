@@ -213,11 +213,11 @@ else{
     # $Env:AWS_PROFILE = "default"
     terraform init -reconfigure
     terraform plan
-    terraform apply
+    terraform apply --auto-approve
 
     if($wsl){
         Write-Output "RUnning ansible with WSL. Uses sudo, will ask for a password multiple times."
-        wsl sudo cp /mnt/c/Users/$WINDOWSUSER/.ssh/id_rsa /root/.ssh/id_rsa
+        wsl sudo cp /mnt/c/Users/$WINDOWSUSERNAME/.ssh/id_rsa /root/.ssh/id_rsa
         wsl sudo chmod 600 /root/.ssh/id_rsa
         wsl sudo ansible-galaxy install --roles-path ~/roles -r requirements.yml
         wsl export ANSIBLE_CONFIG=ansible.cfg
@@ -243,6 +243,7 @@ else{
 #     DOMAINNAME = "your-domain-name"
 #     DOMAINSUFFIX = "your-domain-suffix"
 #     SSH_PUBLIC_KEY_LOCATION = "path-to-your-ssh-public-key"
+#     WSL = 
 # }
 
 # # Run the Deploy script with the parameters from the hashtable
