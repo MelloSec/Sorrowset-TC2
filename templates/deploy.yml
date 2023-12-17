@@ -1,4 +1,13 @@
 ---
+- name: Install role requirements
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Install required roles
+      command: ansible-galaxy install -r requirements.yml --ignore-errors
+      delegate_to: localhost
+
 - name: Install Roles
   gather_facts: yes
   hosts: all
@@ -10,7 +19,7 @@
 
 # - name: run ansible galaxy
 #   local_action: command ansible-galaxy install -r requirements.yml --ignore-errors
-#   become: yes # But do I need to?
+#   become: yes 
 
 # the requirements.yml has been failing to install some things to the local roles folder so
 # ansible-galaxy install -p ./roles geerlingguy.security geerlingguy.ntp weareinteractive.users 

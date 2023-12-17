@@ -7,26 +7,37 @@ With and Without S3 Backend for Terraform
 Run Deploy.ps1 to generate a keyvault, lock it down, store secrets, handle templating and deploy the server
 
 ```powershell
-# Define your parameters in a hashtable with placeholder values
-$params = @{
-    BUCKET = "your-bucket-name"
-    BUCKETKEY = "your-bucket-key"
-    BUCKETREGION = "your-bucket-region"
-    BUCKETENDPOINT = "your-bucket-endpoint"
-    EC2NAME = "your-ec2-instance-name"
-    EC2SIZE = "your-ec2-instance-size"
-    USERNAME = "your-username"
-    AZREGION = "your-azure-region"
-    VAULTNAME = "your-vault-name"
-    VAULTGROUP = "your-vault-group"
-    genKeyVault = $true  # Set to $false if you are specifying an existing keyvault
-    DOMAINNAME = "your-domain-name"
-    DOMAINSUFFIX = "your-domain-suffix"
-    SSH_PUBLIC_KEY_LOCATION = "path-to-your-ssh-public-key"
-}
+# Define your parameters in a hashtable, pass it to the deploy script. Values will be passed to the sub-scripts by pipeline property name.
 
-# Run the Deploy script with the parameters from the hashtable
+# Generate a new Keyvault, read in the DNS secrets and use a local backend to deploy (no $s3enabled, broken right now)
+$params = @{
+    # BUCKET = "mrbucket"
+    # BUCKETKEY = "sorrowsettc2"
+    # BUCKETREGION = "us-east-1"
+    # BUCKETENDPOINT = "nyc3"
+    EC2NAME = "sorrowsettc2"
+    EC2SIZE = "t2.micro"
+    USERNAME = "bosshog"
+    AZREGION = "east-us"
+    VAULTNAME = "sorrowsettc2"
+    VAULTGROUP = "sorrowsettc2"
+    genKeyVault = $true
+    DOMAINNAME = "phishery"
+    DOMAINSUFFIX = "org"
+    SSH_PUBLIC_KEY_LOCATION = "~\.ssh\id_rsa.pub"
+    s3enabled = $false   
+}
 .\Deploy.ps1 @params
+```
+
+### Ansible, copy the key you used to the root directory of WSL (working on it sorry)
+```powershell
+$user = "Administrator"
+wsl sudo cp /mnt/c/Users/$user/.ssh/id_rsa /root/.ssh/id_rsa
+wsl sudo chmod 600 /root/.ssh/id_rsa
+wsl sudo ansible-galaxy install --roles-path ~/roles -r requirements.yml
+wsl export ANSIBLE_CONFIG=ansible.cfg
+wsl sudo ansible-playbook -i ./inventory.yml deploy.yml
 ```
 
 ## Features

@@ -90,11 +90,19 @@ $ParamsProviders = @{
 $ParamsInventory = @{
     EC2NAME = $EC2NAME
     USERNAME = $USERNAME
+    DOMAINNAME = $DOMAINNAME
+    DOMAINSUFFIX = $DOMAINSUFFIX
 }
 
 $ParamsOutputs = @{ 
    DOMAINNAME = $DOMAINNAME
    EC2NAME = $EC2NAME
+}
+
+function Run-ScriptWithParams {
+    param($ScriptPath, $Params)
+    Write-Output "Running $ScriptPath." 
+    & $ScriptPath @Params
 }
 
 function Replace-PlaceholderInFile {
@@ -112,28 +120,18 @@ if($s3enabled) {
     Run-ScriptWithParams ".\Gen-Backend.ps1" $ParamsBackend
 }
 
-function Run-ScriptWithParams {
-    param($ScriptPath, $Params)
-    Write-Output "Running $ScriptPath." 
-    & $ScriptPath @Params
-}
-
-# Check and create .\Deploy directory if it doesn't exist
+# Clean and Create Deploy directory
 $deployPath = ".\Deploy"
 if(Test-Path $deployPath) { Remove-Item $deployPath -Recurse -Force}
-# Remove-Item $deployPath\* -Recurse -Force
-
 if (-not (Test-Path -Path $deployPath)) {
     New-Item -ItemType Directory -Path $deployPath -Force
 }
-
-
 
 Run-ScriptWithParams ".\Gen-Main.ps1" $ParamsMain
 Run-ScriptWithParams ".\Gen-Providers.ps1" $ParamsProviders
 Run-ScriptWithParams ".\Gen-Variables.ps1" $ParamsVariables
 Run-ScriptWithParams ".\Gen-Outputs.ps1" $ParamsOutputs
-# Run-ScriptWithParams ".\Gen-Inventory.ps1" $ParamsInventory
+Run-ScriptWithParams ".\Gen-Inventory.ps1" $ParamsInventory
 
 # Change directory to .\Deploy and run terraform init
 
@@ -189,6 +187,8 @@ if($s3enabled)
 
     $Env:AWS_PROFILE = "default"  # or your regular AWS profile name
     terraform plan
+    terraform apply
+
 
 
     # Clearing Environment Variable
@@ -200,9 +200,10 @@ if($s3enabled)
 }
 else{
     
+    # $Env:AWS_PROFILE = "aws"
     terraform init -reconfigure
     terraform plan
-    terraform apply --auto-approve
+    terraform apply
 }
 
 

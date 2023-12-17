@@ -3,6 +3,12 @@ param(
     [string]$EC2NAME,
 
     [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [string]$DOMAINNAME,
+
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [string]$DOMAINSUFFIX,
+
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
     [string]$USERNAME
 )
 
@@ -12,18 +18,15 @@ if (-not (Test-Path -Path $deployPath)) {
     New-Item -ItemType Directory -Path $deployPath
 }
 
-# Copy inventory.yml template to .\Deploy\inventory
-$templatePath = ".\templates\inventory\inventory.yml"
-$deployFilePath = Join-Path $deployPath "inventory.yml"
-Copy-Item -Path $templatePath -Destination $deployFilePath -Force
+
 
 # Copy requirements.yml template to .\Deploy
-$templateRequirementsPath = ".\templates\requirements.yml"
+$templateRequirementsPath = ".\ansible-init\requirements.yml"
 $deployRequirementsFilePath = Join-Path $deployPath "requirements.yml"
 Copy-Item -Path $templateRequirementsPath -Destination $deployRequirementsFilePath -Force
 
 # Copy ansible.cfg template to .\Deploy
-$templateAnsibleCfgPath = ".\templates\ansible.cfg"
+$templateAnsibleCfgPath = ".\ansible-init\ansible.cfg"
 $deployAnsibleCfgFilePath = Join-Path $deployPath "ansible.cfg"
 Copy-Item -Path $templateAnsibleCfgPath -Destination $deployAnsibleCfgFilePath -Force
 
@@ -32,6 +35,10 @@ $templateDeployPath = ".\templates\deploy.yml"
 $deployFilePath = Join-Path $deployPath "deploy.yml"
 Copy-Item -Path $templateDeployPath -Destination $deployFilePath -Force
 
+# Copy inventory.yml template to .\Deploy\inventory
+$templatePath = ".\templates\inventory.yml"
+$deployFilePath = Join-Path $deployPath "inventory.yml"
+Copy-Item -Path $templatePath -Destination $deployFilePath -Force
 
 # Function to replace placeholder in file
 function Replace-PlaceholderInFile {
@@ -41,6 +48,8 @@ function Replace-PlaceholderInFile {
 }
 # Replace placeholders with parameter values
 Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "EC2NAME" -value $EC2NAME
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINNAME" -value $DOMAINNAME
+Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "DOMAINSUFFIX" -value $DOMAINSUFFIX
 Replace-PlaceholderInFile -filePath $deployFilePath -placeholder "USERNAME" -value $USERNAME
 
 # Usage Example

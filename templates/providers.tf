@@ -19,7 +19,7 @@ terraform {
 
 provider "aws" {
   region     = "<<<BUCKETREGION>>>"
-  profile    = "digitalocean"
+  # profile    = "digitalocean"
 }
 
 

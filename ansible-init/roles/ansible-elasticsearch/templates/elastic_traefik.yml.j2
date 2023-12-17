@@ -1,0 +1,23 @@
+http:
+    routers:
+        elastic:
+            entrypoints:
+                - "websecure"
+            rule: "Host(`elastic.hackerops.dev`)"
+            service: elastic
+            tls: {}
+        kibana:
+            entrypoints:
+                - "websecure"
+            rule: "Host(`kibana.hackerops.dev`)"
+            service: kibana
+            tls: {}
+    services:
+        elastic:
+            loadBalancer:
+                servers:
+                    - url: "http://172.16.1.1:9200/"
+        kibana:
+            loadBalancer:
+                servers:
+                    - url: "http://172.16.1.1:5601/"
