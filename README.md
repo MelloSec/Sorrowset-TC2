@@ -31,9 +31,10 @@ $params = @{
 ```
 
 ### Ansible, copy the key you used to the root directory of WSL (working on it sorry)
+### From .\Deploy
 ```powershell
-$user = "Administrator"
-wsl sudo cp /mnt/c/Users/$user/.ssh/id_rsa /root/.ssh/id_rsa
+$WINDOWSUSER = "Administrator"
+wsl sudo cp /mnt/c/Users/$WINDOWSUSER/.ssh/id_rsa /root/.ssh/id_rsa
 wsl sudo chmod 600 /root/.ssh/id_rsa
 wsl sudo ansible-galaxy install --roles-path ~/roles -r requirements.yml
 wsl export ANSIBLE_CONFIG=ansible.cfg

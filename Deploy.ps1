@@ -45,8 +45,16 @@ param(
     [Parameter(ValueFromPipelineByPropertyName = $true)]
     [string]$USERNAME,
 
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [string]$WINDOWSUSERNAME,
+
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
     [switch]$genKeyVault,
 
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [switch]$wsl,
+
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
     [bool]$s3enabled = $false
 )
 
@@ -199,58 +207,21 @@ if($s3enabled)
 
 }
 else{
-    
-    # $Env:AWS_PROFILE = "aws"
+    # Run it with a normal backend, only way supported at the moment
+
+    # $Env:AWS_PROFILE = "default"
     terraform init -reconfigure
     terraform plan
     terraform apply
+
+    if($wsl){
+        wsl sudo cp /mnt/c/Users/$WINDOWSUSER/.ssh/id_rsa /root/.ssh/id_rsa
+        wsl sudo chmod 600 /root/.ssh/id_rsa
+        wsl sudo ansible-galaxy install --roles-path ~/roles -r requirements.yml
+        wsl export ANSIBLE_CONFIG=ansible.cfg
+        wsl sudo ansible-playbook -i ./inventory.yml deploy.yml
+    }
 }
-
-
-### S3 Version
-# $AWS_ACCESS_KEY_ID = Read-Host "Enter DigitalOcean S3 Key ID" -AsSecureString
-
-# $AWS_SECRET_ACCESS_KEY = Read-Host "Enter DigitalOcean S3 Secret Access Key" -AsSecureString
-
-# # Convert SecureString to Plain Text (for temporary use)
-# $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($AWS_ACCESS_KEY_ID)
-# $PlainAWS_ACCESS_KEY_ID = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-
-# $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($AWS_SECRET_ACCESS_KEY)
-# $PlainAWS_SECRET_ACCESS_KEY = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-
-# # Configure AWS CLI
-# aws configure set aws_access_key_id $PlainAWS_ACCESS_KEY_ID --profile digitalocean
-# aws configure set aws_secret_access_key $PlainAWS_SECRET_ACCESS_KEY --profile digitalocean
-# aws configure set default.region us-east-1 --profile digitalocean
-
-# $env:AWS_PROFILE="digitalocean"
-# # export AWS_PROFILE=digitalocean
-
-# Initialize and copy tf to backend
-# terraform init -force-copy
-# terraform plan
-# terraform apply --auto-approve
-
-# # Prompt for AWS access keys
-# $AWS_ACCESS_KEY_ID = Read-Host "Enter AWS Access Key ID" -AsSecureString
-# $AWS_SECRET_ACCESS_KEY = Read-Host "Enter AWS Secret Access Key" -AsSecureString
-
-# # Convert SecureString to Plain Text (for temporary use)
-# $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($AWS_ACCESS_KEY_ID)
-# $PlainAWS_ACCESS_KEY_ID = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-
-# $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($AWS_SECRET_ACCESS_KEY)
-# $PlainAWS_SECRET_ACCESS_KEY = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-
-# # Configure AWS CLI
-# aws configure set aws_access_key_id $PlainAWS_ACCESS_KEY_ID
-# aws configure set aws_secret_access_key $PlainAWS_SECRET_ACCESS_KEY
-# aws configure set default.region $BUCKETREGION
-
-# # Initialize and copy tf to backend
-# terraform init -force-copy
-# terraform plan
 
 # Usage
 # Define your parameters in a hashtable with placeholder values
