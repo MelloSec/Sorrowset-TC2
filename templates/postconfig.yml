@@ -1,0 +1,128 @@
+---
+- name: Install and configure tools
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update package index
+      apt:
+        update_cache: yes
+
+    - name: Upgrade packages
+      apt:
+        upgrade: yes
+
+    - name: Install snapd
+      apt:
+        name: snapd
+
+    - name: Install unzip
+      apt:
+        name: unzip
+
+    - name: Install net-tools
+      apt:
+        name: net-tools
+
+    # - name: Create fatlenny user
+    #   lineinfile:
+    #     path: /etc/sudoers
+    #     line: "fatlenny ALL=(ALL) NOPASSWD:ALL"
+    #     state: present
+
+    - name: Install apt-transport-https, ca-certificates, and gnupg
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+
+    - name: Install ffuf
+      apt:
+        name: ffuf
+
+    - name: Install eyewitness,  hurl
+      apt:
+        name:
+          - eyewitness
+          - hurl
+
+    - name: Install ncat
+      apt:
+        name: ncat
+
+    - name: Install rlwrap
+      apt:
+        name: rlwrap
+
+    - name: Install dirsearch
+      apt:
+        name: dirsearch
+
+    - name: Install socat
+      apt:
+        name: socat
+
+    - name: Install feroxbuster
+      apt:
+        name: feroxbuster
+
+    - name: Install golang
+      apt:
+        name: golang-1.19-go
+        state: present
+
+    - name: Install Python3-pip, pipx, and python3-venv
+      apt:
+        name:
+          - python3-pip
+          - pipx
+          - python3-venv
+        state: present
+
+    - name: Git clone Certipy
+      git:
+        repo: https://github.com/ly4k/Certipy.git
+        dest: /etc/ansible/Certipy
+
+    - name: Install Certipy
+      command: pip3 install /etc/ansible/Certipy
+
+    - name: Install mitm6
+      command: pip install mitm6
+
+    - name: Download DeepCE
+      command: curl -sL https://github.com/stealthcopter/deepce/raw/main/deepce.sh -o deepce.sh
+
+    - name: Install Nuclei
+      command: go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest 
+
+    - name: Install Nuclei Templates
+      command: git clone https://github.com/projectdiscovery/nuclei-templates.git   
+   
+    - name: Install crowbar
+      apt:
+        name: crowbar   
+
+  
+
+
+          # - name: Install PwnCat
+    #   command:
+    #     - cd /opt/pwncat
+    #     - python3 setup.py install
+
+    # - name: Create PwnDrop directory
+    #   file:
+    #     path: /pwndrop
+    #     state: directory
+
+    # - name: Download and install PwnDrop
+    #   get_url:
+    #     url: https://github.com/kgretzky/pwndrop/releases/download/1.0.1/pwndrop-linux-amd64.tar.gz
+    #     dest: /pwndrop
+
+    # - name: Extract PwnDrop
+    #   command: tar -zxvf /pwndrop/pwndrop-linux-amd64.tar.gz -C /pwndrop
+
+    # - name: Start PwnDrop
+    #   command: /pwndrop/pwndrop-linux-amd64 -c /p
