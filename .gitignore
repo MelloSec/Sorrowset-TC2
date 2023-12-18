@@ -1,8 +1,10 @@
 # Terraform .terraform directory
 **/.terraform/*
 
-.\deploy\backend.tf
-.\Deploy\backend.tf
+.\deploy
+.\Deploy
+\Deply\
+Deploy\
 
 # .tfstate files
 *.tfstate

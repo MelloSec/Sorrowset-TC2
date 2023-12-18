@@ -55,6 +55,12 @@ param(
     [switch]$wsl,
 
     [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [switch]$switch,
+
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [switch]$approve,
+
+    [Parameter(ValueFromPipelineByPropertyName = $true)]
     [bool]$s3enabled = $false
 )
 
@@ -198,8 +204,6 @@ if($s3enabled)
     terraform plan
     terraform apply
 
-
-
     # Clearing Environment Variable
     # Remove-Variable -Name AWS_PROFILE -Scope Local
 
@@ -213,7 +217,13 @@ else{
     # $Env:AWS_PROFILE = "default"
     terraform init -reconfigure
     terraform plan
-    terraform apply --auto-approve
+    
+    if($approve){
+        terraform apply --auto-approve
+    }else{
+        terraform apply
+    }
+
 
     if($wsl){
         Write-Output "RUnning ansible with WSL. Uses sudo, will ask for a password multiple times."
