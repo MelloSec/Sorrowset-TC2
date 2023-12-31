@@ -4,6 +4,15 @@ Powershell reads in values, copies template files and replaces what's required t
 
 With and Without S3 Backend for Terraform
 
+### Requirements
+Need terraform, the azure CLI, the aws CLI. WSL is recommended.
+
+```powershell
+choco install terraform -y
+choco install awscli -y
+choco install az -y
+```
+
 Run Deploy.ps1 to generate a keyvault, lock it down, store secrets, handle templating and deploy the server
 
 ```powershell
@@ -100,18 +109,12 @@ wsl sudo ansible-playbook -i ./inventory.yml deploy.yml
 - viasite-ansible.zsh = installs zsh
 - docker = Checks for Docker, Installs clean with Compose
 - os = upgrade, locale, swap partition, etc
-- ansible-elasticsearch =
-- ansible-traefik =
-- ansible-vault =
 
-### Manual Instructions carried over from original Sorrowset-EC2 project
-
-###### - Make sure you have Terraform, the AWS-CLI and Ansible installed on your workstation.
-###### - Terraform will save state on your workstation, S3/Cloud storage or a Workspace (Hashicorp, Github)
-###### - Ansible roles will install on your workstation and do not need to be installed on the remote VM
 
  
-###### 1. Update, install ansible, terraform, aws
+<!-- ###### Update, install ansible, terraform, aws
+
+
 
 ```sh
 # Install ansible
@@ -127,9 +130,9 @@ sudo apt-get update && sudo apt-get install terraform
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
-```
+``` -->
 
-###### 2. Make your mods to `main.tf`, `inventory.yml`, `providers.tf`, `variables.tf`
+<!-- ###### 2. Make your mods to `main.tf`, `inventory.yml`, `providers.tf`, `variables.tf`
 
  See above '_What Terraform's Doing_'
 
@@ -153,9 +156,10 @@ terraform apply --auto-approve
 terraform output
 ```
 
-###### 6. Customize first run deployment by comment/uncomment roles under `deploy.yml` 
+###### 6. Customize first run deployment by comment/uncomment roles under `deploy.yml`  -->
 
-###### 7. Run the deploy.yml playbook
+###### Run the terraform / deploy.yml playbook manually
+```bash
 ansible-galaxy install -r requirements.yml
 ansible-playbook deploy.yml
 
@@ -177,4 +181,4 @@ ansible-galaxy install --roles-path ~/roles -r requirements.yml
 
 export ANSIBLE_CONFIG=ansible.cfg
 ansible-playbook -i inventory deploy.yml
-
+```
